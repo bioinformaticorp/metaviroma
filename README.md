@@ -17,7 +17,7 @@ megahit -t 8 --kmin-1pass -1 489_1.fastq.gz,490_1.fastq.gz,491_1.fastq.gz,493_1.
 ~/programas/quast-5.0.2/quast.py -t 8 final.contigs.fa
 
 
-########################################################################
+
 #Identificación de genomas virales TOTALES y clasifica Profagos.
 
 #CheckV, identifica genomas virales cerrados, estima la integridad de los fragmentos genómicos y elimina las regiones huésped flanqueantes de los provirus integrados.
@@ -33,7 +33,7 @@ checkv end_to_end out/megahit_results/final.contigs.fa output_checkv -d ~/db/che
 #checkv complete_genomes input_file.fna output_directory
 #checkv quality_summary input_file.fna output_directory
 
-#######################
+
 #INTERPRETAR RESULTADOS
 #quality_summary.tsv, pestaña 'checkv_quality' DETERMINA SI CADA CONTIG, ES O NO UN VIRUS, ADEMÁS LA PESTAÑA 'provirus' identifica si es o no un provirus
 #'Not-determined' This contig also has no viral genes identified, so there's a chance it may not even be a virus.
@@ -43,15 +43,18 @@ checkv end_to_end out/megahit_results/final.contigs.fa output_checkv -d ~/db/che
 #Complete based on the presence of a direct terminal repeat (DTR) and has 100% completeness based on the AAI method. This sequence can condifently treated as a complete genome.
 
 
-########################################################################
+
 #PhaMer. Identifica bacteriofagos de datos metagenòmicos
 
 #Input ensamble de MEGAHIT (final.contigs.fa) y con los virus de checkV (viruses.fna).
+
 python PhaMer_preprocessing.py --threads 8 --contigs final.contigs.fa
+
 python PhaMer.py --out OUTPUT.csv --threads 8
+
 #Resultado: En el archivo OUTPUT.csv identifica contigs que contienen fagos, columna Pred y columna Score > 0.5.
 
-########################################################################
+
 #PHASTER (PHAge Search Tool Enhanced Release) es una actualización significativa del popular servidor web PHAST para la rápida identificación y anotación de secuencias de profagos dentro de genomas y plásmidos bacterianos.
 
 #PHASTER (phaster_scripts.py) es necesario estar conectado a internet, ya que sube las secuencias a la plataforma https://phaster.ca/. La secuencia de ADN debe ajustarse a la codificación IUPAC. Un archivo metagenómico debe contener contigs, cada uno con su propio encabezado. A partir de esta entrada, sólo se procesarán los contigs de longitud >=2000. Si la opción metagenómica no está marcada, las 10 primeras secuencias se procesarán individualmente.
@@ -67,7 +70,6 @@ python phaster.py --contigs --fasta contigs.fasta
 python phaster.py --get-status
 
 
-########################################################################
 #KRAKEN2, Taxonomic Assignment, solo de virus (RECOMIENDO HACERLO CON LOS CONTIGS EXTRAIDOS DE LOS RESULTADOS DE checkV, virus putativos y/o profagos) y los resultados de PhaMer y PHASTER
 
 #construir base de datos
@@ -103,8 +105,6 @@ kraken-biom virus_prophagos_checkv.report --fmt json -o virus_prophagos_checkv.b
 
 
 
-
-########################################################################
 
 #Asignación taxonómica del hospedero para Fagos y Profagos, base de datos genoes/HUMAN_MICROBIOM/Bacteria/all.fna.tar.gz del NCBI (asignacion_tax_bacterias)
 
